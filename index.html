@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yadav Tube - Aesthetic OTT</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d0d11;
+            --card-bg: #16161e;
+            --accent-color: #ff0055;
+            --accent-gradient: linear-gradient(135deg, #ff0055, #7a00ff);
+            --text-color: #f1f1f1;
+            --text-sub: #a0a0b0;
+            --border-color: #262635;
+            --nav-height: 65px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: calc(var(--nav-height) + 15px);
+            overflow-x: hidden;
+        }
+
+        /* Top Header */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(13, 13, 17, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            font-size: 18px;
+        }
+
+        .icon-btn {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Views Layout */
+        .tab-content {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 1. HOME TAB --- */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            background: var(--card-bg);
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            margin-left: 10px;
+        }
+
+        .mic-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .mic-btn.listening {
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+
+        .category-chip {
+            background: var(--card-bg);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .category-chip.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #2a2a3a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumbnail span {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.8);
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .video-details {
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #444;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .meta h4 {
+            font-size: 14px;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .meta p {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        /* --- 2. INFINITE BOX (SHORTS) --- */
+        #infinite-box {
+            padding: 0;
+        }
+
+        .shorts-container {
+            height: calc(100vh - var(--nav-height) - 60px);
+            snap-type: y mandatory;
+            overflow-y: scroll;
+            border-radius: 12px;
+        }
+
+        .short-card {
+            height: 100%;
+            snap-align: start;
+            position: relative;
+            background: linear-gradient(180deg, #1f1d2b, #0d0d11);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .short-actions {
+            position: absolute;
+            right: 15px;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 20px;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .action-btn span {
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+
+        .short-info {
+            width: 80%;
+        }
+
+        .follow-btn {
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        /* --- 3. CREATE MODAL --- */
+        .upload-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-card {
+            background: var(--card-bg);
+            border: 1px dashed var(--accent-color);
+            padding: 25px 10px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .upload-card i {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        /* --- 4. FOLLOWING --- */
+        .following-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* --- 5. PROFILE & STUDIO --- */
+        .channel-banner {
+            width: 100%;
+            height: 120px;
+            background: #2a2a3a;
+            border-radius: 12px 12px 0 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding: 0 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-top: -40px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 4px solid var(--bg-color);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-bio {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin: 6px 0;
+        }
+
+        .profile-links {
+            font-size: 12px;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item h3 { font-size: 16px; }
+        .stat-item p { font-size: 12px; color: var(--text-sub); }
+
+        .editor-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .timeline-bar {
+            height: 40px;
+            background: #2a2a3a;
+            border-radius: 6px;
+            margin: 10px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .timeline-cut {
+            height: 80%;
+            width: 40%;
+            background: rgba(255, 0, 85, 0.4);
+            border: 2px solid var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .editor-tools {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-top: 8px;
+        }
+
+        .tool-btn {
+            background: #262635;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        /* --- MODALS & FORMS --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 25px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: #0d0d11;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0d0d11;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: #0a0a0e;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-sub);
+            font-size: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .plus-btn i {
+            font-size: 20px;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            margin-bottom: 0;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-play"></i> Yadav Tube
+        </div>
+        <div class="header-actions">
+            <i class="fa-solid fa-bell icon-btn"></i>
+            <i class="fa-solid fa-gear icon-btn" onclick="openModal('settingsModal')"></i>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREAS -->
+
+    <!-- Option 1: HOME PAGE -->
+    <div id="home" class="tab-content active">
+        <div class="search-container">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
+                <input type="text" id="searchInput" placeholder="Search videos, channels..." onkeyup="filterVideos()">
+            </div>
+            <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+        </div>
+        
+        <div class="categories">
+            <div class="category-chip active" onclick="selectCategory('All', this)">All</div>
+            <div class="category-chip" onclick="selectCategory('Cricket', this)">Cricket</div>
+            <div class="category-chip" onclick="selectCategory('Music', this)">Music</div>
+            <div class="category-chip" onclick="selectCategory('Tech', this)">Tech</div>
+            <div class="category-chip" onclick="selectCategory('Gaming', this)">Gaming</div>
+            <div class="category-chip" onclick="selectCategory('Vlogs', this)">Vlogs</div>
+        </div>
+
+        <div class="video-grid" id="videoGrid">
+            <!-- Dynamically Rendered Videos -->
+        </div>
+    </div>
+
+    <!-- Option 2: INFINITE BOX (Shorts) -->
+    <div id="infinite-box" class="tab-content">
+        <div class="shorts-container">
+            <div class="short-card">
+                <div class="short-info">
+                    <h3>@desiflux <button class="follow-btn">Follow</button></h3>
+                    <p>Night vibes with aesthetic lights 🌟 #shorts #aesthetic</p>
+                </div>
+                <div class="short-actions">
+                    <div class="action-btn"><i class="fa-solid fa-heart"></i><span>24.5K</span></div>
+                    <div class="action-btn"><i class="fa-solid fa-comment"></i><span>1,020</span></div>
+                    <div class="action-btn"><i class="fa-solid fa-share"></i><span>Share</span></div>
+                    <div class="action-btn"><i class="fa-solid fa-bookmark"></i><span>Save</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option 3: PLUS / CREATE OPTION -->
+    <div id="create" class="tab-content">
+        <h2>Create & Post</h2>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 5px;">Share content with your audience</p>
+
+        <div class="upload-options">
+            <div class="upload-card">
+                <i class="fa-solid fa-video"></i>
+                <p style="font-size: 12px;">Video</p>
+            </div>
+            <div class="upload-card">
+                <i class="fa-solid fa-bolt"></i>
+                <p style="font-size: 12px;">Short</p>
+            </div>
+            <div class="upload-card">
+                <i class="fa-solid fa-image"></i>
+                <p style="font-size: 12px;">Photo/Post</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option 4: FOLLOWING -->
+    <div id="following" class="tab-content">
+        <h3 style="margin-bottom: 15px;">From Creators You Follow</h3>
+        <div class="following-feed">
+            <div class="video-card">
+                <div class="thumbnail">
+                    <i class="fa-solid fa-circle-play fa-2x" style="color: var(--accent-color);"></i>
+                    <span>04:20</span>
+                </div>
+                <div class="video-details">
+                    <div class="avatar" style="background: #a00;"></div>
+                    <div class="meta">
+                        <h4>Exclusive Creator Update - New Project Reveal</h4>
+                        <p>Aesthetic Official • 10K views • 4 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option 5: PROFILE & STUDIO -->
+    <div id="profile" class="tab-content">
+        <div class="channel-banner" id="bannerDisplay"></div>
+        <div class="profile-header">
+            <div class="profile-avatar" id="avatarDisplay">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <h2 id="channelNameDisplay">My Channel</h2>
+            <p style="color: var(--text-sub); font-size: 12px;" id="handleDisplay">@yadav_official</p>
+            <p class="profile-bio" id="bioDisplay">Welcome to my channel! Subscribe for new videos.</p>
+            <a href="#" class="profile-links" id="linkDisplay" target="_blank"><i class="fa-solid fa-link"></i> Custom Link</a>
+            <br>
+            <button class="tool-btn" style="margin-top: 10px;" onclick="openModal('editProfileModal')">Edit Profile</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <h3>12.4K</h3>
+                <p>Subscribers</p>
+            </div>
+            <div class="stat-item">
+                <h3>1.2M</h3>
+                <p>Total Views</p>
+            </div>
+            <div class="stat-item">
+                <h3>24</h3>
+                <p>Videos</p>
+            </div>
+        </div>
+
+        <h4 style="margin-top: 15px;"><i class="fa-solid fa-clock-rotate-left"></i> Watch History</h4>
+        <p style="font-size: 12px; color: var(--text-sub); margin-top: 5px;">Recently watched 8 videos</p>
+
+        <!-- Built-in Timeline Video Editor Studio -->
+        <div class="editor-section">
+            <h4><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> Quick Video Editor</h4>
+            <div class="timeline-bar">
+                <div class="timeline-cut"></div>
+            </div>
+            <div class="editor-tools">
+                <button class="tool-btn"><i class="fa-solid fa-scissors"></i> Cut / Trim</button>
+                <button class="tool-btn"><i class="fa-solid fa-music"></i> Add Music</button>
+                <button class="tool-btn"><i class="fa-solid fa-wand-magic"></i> Filters</button>
+                <button class="tool-btn"><i class="fa-solid fa-font"></i> Text</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION (5 OPTIONS) -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('infinite-box', this)">
+            <i class="fa-solid fa-infinity"></i>
+            <span>Infinite Box</span>
+        </div>
+        <div class="nav-item plus-btn" onclick="switchTab('create', this)">
+            <i class="fa-solid fa-plus"></i>
+            <span>Create</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('following', this)">
+            <i class="fa-solid fa-users"></i>
+            <span>Following</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+    <!-- 1. REGISTRATION / LOGIN MODAL -->
+    <div class="modal active" id="authModal">
+        <div class="modal-card">
+            <h2>Welcome to Yadav Tube</h2>
+            <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 20px;">Sign in with your phone number to continue</p>
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="regPhone" placeholder="+91 98765 43210" pattern="[0-9+ ]{10,14}" required>
+                </div>
+                <button type="submit" class="submit-btn">Login / Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. SETTINGS MODAL -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <i class="fa-solid fa-xmark icon-btn" onclick="closeModal('settingsModal')"></i>
+            </div>
+            <div class="settings-list">
+                <div class="form-group">
+                    <label>App Language</label>
+                    <select id="languageSelect">
+                        <optgroup label="Indian Languages">
+                            <option value="hi" selected>Hindi (हिंदी)</option>
+                            <option value="en">English</option>
+                            <option value="bn">Bengali (বাংলা)</option>
+                            <option value="te">Telugu (తెలుగు)</option>
+                            <option value="mr">Marathi (मराठी)</option>
+                            <option value="ta">Tamil (தமிழ்)</option>
+                            <option value="ur">Urdu (اردو)</option>
+                            <option value="gu">Gujarati (ગુજરાતી)</option>
+                            <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                            <option value="ml">Malayalam (മലയാളം)</option>
+                            <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                        </optgroup>
+                        <optgroup label="International Languages">
+                            <option value="es">Spanish (Español)</option>
+                            <option value="fr">French (Français)</option>
+                            <option value="de">German (Deutsch)</option>
+                            <option value="ja">Japanese (日本語)</option>
+                            <option value="zh">Chinese (中文)</option>
+                            <option value="ar">Arabic (العربية)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <span>Dark Theme</span>
+                    <input type="checkbox" checked disabled>
+                </div>
+                <div class="settings-item">
+                    <span>Autoplay Videos</span>
+                    <input type="checkbox" checked>
+                </div>
+                <div class="settings-item">
+                    <span>Restricted Mode</span>
+                    <input type="checkbox">
+                </div>
+                <button class="submit-btn" style="background: #333;" onclick="closeModal('settingsModal')">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. EDIT PROFILE MODAL -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <i class="fa-solid fa-xmark icon-btn" onclick="closeModal('editProfileModal')"></i>
+            </div>
+            <form onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>Channel Name</label>
+                    <input type="text" id="editName" value="My Channel">
+                </div>
+                <div class="form-group">
+                    <label>Handle</label>
+                    <input type="text" id="editHandle" value="@yadav_official">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="editBio" rows="3">Welcome to my channel! Subscribe for new videos.</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture URL</label>
+                    <input type="url" id="editAvatar" placeholder="https://example.com/avatar.jpg">
+                </div>
+                <div class="form-group">
+                    <label>Banner Image URL</label>
+                    <input type="url" id="editBanner" placeholder="https://example.com/banner.jpg">
+                </div>
+                <div class="form-group">
+                    <label>Custom Link</label>
+                    <input type="url" id="editLink" placeholder="https://instagram.com/yourhandle">
+                </div>
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Mock Video Dataset
+        const videos = [
+            { title: "India vs Pakistan T20 World Cup Highlights", channel: "Cricket Bharat", views: "1.2M views", time: "2 hours ago", category: "Cricket", duration: "14:20" },
+            { title: "Top 10 High Quality Video Streaming Tips", channel: "Tech World", views: "45K views", time: "1 day ago", category: "Tech", duration: "08:15" },
+            { title: "Lo-Fi Aesthetic Chill Music Mix 2026", channel: "Desi Vibe Studio", views: "300K views", time: "3 days ago", category: "Music", duration: "45:00" },
+            { title: "GTA 6 Next-Gen Gameplay Review", channel: "Gamer Zone", views: "890K views", time: "5 hours ago", category: "Gaming", duration: "22:10" },
+            { title: "Aesthetic Cinematic Vlog - Episode 1", channel: "Yadav Productions", views: "120K views", time: "2 hours ago", category: "Vlogs", duration: "12:45" },
+            { title: "Cricket Batting Masterclass - Cover Drive", channel: "Cricket Bharat", views: "85K views", time: "4 days ago", category: "Cricket", duration: "10:05" }
+        ];
+
+        let selectedCategory = "All";
+
+        // Render Video Cards
+        function renderVideos(items) {
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-sub); text-align: center; grid-column: 1/-1; padding: 40px 0;">No videos found.</p>';
+                return;
+            }
+
+            items.forEach(v => {
+                grid.innerHTML += `
+                    <div class="video-card">
+                        <div class="thumbnail">
+                            <i class="fa-solid fa-film fa-2x" style="color: #555;"></i>
+                            <span>${v.duration}</span>
+                        </div>
+                        <div class="video-details">
+                            <div class="avatar"></div>
+                            <div class="meta">
+                                <h4>${v.title}</h4>
+                                <p>${v.channel} • ${v.views} • ${v.time}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Category Filtering
+        function selectCategory(category, element) {
+            selectedCategory = category;
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            filterVideos();
+        }
+
+        // Search and Filter Logic
+        function filterVideos() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = videos.filter(v => {
+                const matchesCat = (selectedCategory === "All") || (v.category === selectedCategory);
+                const matchesSearch = v.title.toLowerCase().includes(query) || v.channel.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+            renderVideos(filtered);
+        }
+
+        // Speech-to-Text Voice Search
+        function startVoiceSearch() {
+            const micBtn = document.getElementById('micBtn');
+            const searchInput = document.getElementById('searchInput');
+
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Speech recognition is not supported in this browser.");
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                micBtn.classList.add('listening');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                filterVideos();
+                micBtn.classList.remove('listening');
+            };
+
+            recognition.onerror = function() {
+                micBtn.classList.remove('listening');
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove('listening');
+            };
+
+            recognition.start();
+        }
+
+        // Tab Navigation
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // Modal Controllers
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Handle User Login/Registration
+        function handleAuth(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+
+            document.getElementById('channelNameDisplay').innerText = name + "'s Channel";
+            document.getElementById('editName').value = name + "'s Channel";
+            
+            closeModal('authModal');
+        }
+
+        // Save Profile Edits
+        function saveProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('editName').value;
+            const handle = document.getElementById('editHandle').value;
+            const bio = document.getElementById('editBio').value;
+            const avatar = document.getElementById('editAvatar').value;
+            const banner = document.getElementById('editBanner').value;
+            const link = document.getElementById('editLink').value;
+
+            document.getElementById('channelNameDisplay').innerText = name;
+            document.getElementById('handleDisplay').innerText = handle;
+            document.getElementById('bioDisplay').innerText = bio;
+
+            if (avatar) {
+                document.getElementById('avatarDisplay').style.backgroundImage = `url('${avatar}')`;
+                document.getElementById('avatarDisplay').innerHTML = '';
+            }
+            if (banner) {
+                document.getElementById('bannerDisplay').style.backgroundImage = `url('${banner}')`;
+            }
+            if (link) {
+                const linkElem = document.getElementById('linkDisplay');
+                linkElem.href = link;
+                linkElem.innerHTML = `<i class="fa-solid fa-link"></i> ${link}`;
+            }
+
+            closeModal('editProfileModal');
+        }
+
+        // Initial Setup
+        renderVideos(videos);
+    </script>
+</body>
+</html>
