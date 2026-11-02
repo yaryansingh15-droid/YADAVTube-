@@ -1,0 +1,1205 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YADAVTube - Aesthetic OTT & Creation Studio</title>
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #0d0d11;
+            --card-bg: #16161e;
+            --card-hover: #1f1f2c;
+            --accent-color: #ff0055;
+            --accent-gradient: linear-gradient(135deg, #ff0055, #7a00ff);
+            --accent-purple: #7a00ff;
+            --text-color: #f1f1f1;
+            --text-sub: #a0a0b0;
+            --border-color: #262635;
+            --nav-height: 65px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: calc(var(--nav-height) + 15px);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0d11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333345;
+            border-radius: 4px;
+        }
+
+        /* Top Header */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(13, 13, 17, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Views Layout */
+        .tab-content {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home View Styling */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 10px 16px;
+            border-radius: 24px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .search-bar:focus-within {
+            border-color: #ff0055;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+
+        .category-chip {
+            background: var(--card-bg);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-chip.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        /* Video Cards */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #1a1a26;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .thumbnail img, .thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail span.duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            backdrop-filter: blur(4px);
+        }
+
+        .video-details {
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2a2a3c;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border-color);
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .meta {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .meta h4 {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .meta p {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        /* --- 2. INFINITE BOX (SHORTS) --- */
+        #infinite-box {
+            padding: 0;
+        }
+
+        .shorts-container {
+            height: calc(100vh - var(--nav-height) - 60px);
+            snap-type: y mandatory;
+            overflow-y: scroll;
+            border-radius: 16px;
+            scrollbar-width: none;
+        }
+
+        .short-card {
+            height: 100%;
+            snap-align: start;
+            position: relative;
+            background: #050508;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .short-video-el {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .short-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%);
+            pointer-events: none;
+        }
+
+        .short-actions {
+            position: absolute;
+            right: 15px;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 22px;
+            gap: 4px;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            transition: transform 0.2s;
+        }
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .action-btn span {
+            font-size: 11px;
+            color: #d0d0e0;
+        }
+
+        .short-info {
+            width: 75%;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+
+        .follow-btn {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        /* --- 3. CREATE & EDITORS --- */
+        .upload-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-card {
+            background: var(--card-bg);
+            border: 1.5px dashed var(--accent-color);
+            padding: 30px 10px;
+            text-align: center;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .upload-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-3px);
+            border-color: var(--accent-purple);
+        }
+
+        .upload-card i {
+            font-size: 28px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        /* Editor Modal Overlay */
+        .editor-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .editor-modal.active {
+            display: flex;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            background: #20202e;
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .filter-btn.active {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: #08080c;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-sub);
+            font-size: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 20%;
+            transition: color 0.2s;
+        }
+
+        .nav-item i {
+            font-size: 19px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .plus-btn i {
+            font-size: 20px;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            margin-bottom: 0;
+            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.5);
+            transition: transform 0.2s;
+        }
+        .plus-btn:active i {
+            transform: scale(0.9);
+        }
+
+        /* Video Filter Styles */
+        .filter-normal { filter: none; }
+        .filter-vintage { filter: sepia(0.6) contrast(1.1) brightness(0.9); }
+        .filter-bw { filter: grayscale(1); }
+        .filter-vivid { filter: saturate(1.8) contrast(1.2); }
+        .filter-cool { filter: hue-rotate(180deg) saturate(1.2); }
+        .filter-warm { filter: sepia(0.3) saturate(1.4); }
+
+        /* Notification Toast */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--accent-gradient);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 3000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Action completed!</span>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-play"></i> YADAVTube
+        </div>
+        <div class="flex items-center gap-4 text-lg">
+            <i class="fa-solid fa-bell cursor-pointer hover:text-pink-500 transition-colors"></i>
+            <i class="fa-solid fa-gear cursor-pointer hover:text-pink-500 transition-colors" onclick="switchTab('profile', document.querySelectorAll('.nav-item')[4])"></i>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREAS -->
+
+    <!-- Tab 1: HOME PAGE -->
+    <div id="home" class="tab-content active">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
+            <input type="text" id="searchInput" placeholder="Search videos, creators, posts..." onkeyup="filterHomeContent()">
+        </div>
+        
+        <div class="categories">
+            <div class="category-chip active" onclick="selectCategory(this, 'all')">All</div>
+            <div class="category-chip" onclick="selectCategory(this, 'trending')">Trending</div>
+            <div class="category-chip" onclick="selectCategory(this, 'cricket')">Cricket</div>
+            <div class="category-chip" onclick="selectCategory(this, 'music')">Music</div>
+            <div class="category-chip" onclick="selectCategory(this, 'tech')">Tech</div>
+            <div class="category-chip" onclick="selectCategory(this, 'gaming')">Gaming</div>
+        </div>
+
+        <div class="video-grid" id="homeVideoGrid">
+            <!-- Default Feed Content -->
+            <div class="video-card">
+                <div class="thumbnail">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Cinematic Art">
+                    <span class="duration">12:45</span>
+                </div>
+                <div class="video-details">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                    </div>
+                    <div class="meta">
+                        <h4>Aesthetic Cinematic Vlog - Episode 1</h4>
+                        <p>Yadav Productions • 120K views • 2 hours ago</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="thumbnail">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Tech">
+                    <span class="duration">08:15</span>
+                </div>
+                <div class="video-details">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                    </div>
+                    <div class="meta">
+                        <h4>Top 10 High Quality Video Streaming Tips</h4>
+                        <p>Tech World • 45K views • 1 day ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: INFINITE BOX (Shorts View) -->
+    <div id="infinite-box" class="tab-content">
+        <div class="shorts-container" id="shortsFeedContainer">
+            <!-- Feed dynamically generated -->
+        </div>
+    </div>
+
+    <!-- Tab 3: CREATE OPTION -->
+    <div id="create" class="tab-content">
+        <div class="max-w-md mx-auto py-4">
+            <h2 class="text-2xl font-bold text-center mb-1">Create & Upload Content</h2>
+            <p style="color: var(--text-sub);" class="text-xs text-center mb-6">Select content type to upload & edit before publishing</p>
+
+            <div class="upload-options">
+                <!-- Video Upload (Longer than 1 min allowed) -->
+                <div class="upload-card" onclick="triggerFileUpload('video')">
+                    <i class="fa-solid fa-video"></i>
+                    <p class="font-semibold text-sm">Full Video</p>
+                    <span class="text-[10px] text-gray-400 block mt-1">> 1 min supported</span>
+                </div>
+
+                <!-- Short Upload (< 1 min) -->
+                <div class="upload-card" onclick="triggerFileUpload('short')">
+                    <i class="fa-solid fa-bolt"></i>
+                    <p class="font-semibold text-sm">Short Video</p>
+                    <span class="text-[10px] text-gray-400 block mt-1">< 60s max</span>
+                </div>
+
+                <!-- Photo / Post Upload -->
+                <div class="upload-card" onclick="triggerFileUpload('post')">
+                    <i class="fa-solid fa-image"></i>
+                    <p class="font-semibold text-sm">Photo Post</p>
+                    <span class="text-[10px] text-gray-400 block mt-1">Image & Caption</span>
+                </div>
+            </div>
+
+            <input type="file" id="mediaFileInput" class="hidden" onchange="handleFileSelected(event)">
+        </div>
+    </div>
+
+    <!-- Tab 4: FOLLOWING -->
+    <div id="following" class="tab-content">
+        <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-user-check text-pink-500 mr-2"></i>From Creators You Follow</h3>
+        <div class="following-feed flex flex-col gap-4">
+            <div class="video-card">
+                <div class="thumbnail">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Music Stage">
+                    <span class="duration">04:20</span>
+                </div>
+                <div class="video-details">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                    </div>
+                    <div class="meta">
+                        <h4>Exclusive Studio Jam Session - Acoustic Vibes</h4>
+                        <p>Aesthetic Official • 10K views • 4 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 5: PROFILE & STUDIO -->
+    <div id="profile" class="tab-content">
+        <div class="profile-header text-center py-4 border-b border-gray-800 relative">
+            <div class="relative w-24 h-24 mx-auto mb-3 group cursor-pointer" onclick="document.getElementById('profilePicInput').click()" title="Click to change profile picture">
+                <div class="profile-avatar w-full h-full rounded-full overflow-hidden border-2 border-pink-500 flex items-center justify-center bg-gray-800">
+                    <img id="userProfileImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover" alt="User Avatar">
+                </div>
+                <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-camera text-white text-xl"></i>
+                </div>
+            </div>
+            <input type="file" id="profilePicInput" accept="image/*" class="hidden" onchange="updateProfilePicture(event)">
+
+            <h2 class="text-xl font-bold" id="profileDisplayName">Yadav Studio</h2>
+            <p class="text-xs text-gray-400 mb-2">@yadav_official</p>
+            <button class="px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-xs text-white border border-gray-700 transition" onclick="editProfileName()">Edit Profile</button>
+        </div>
+
+        <div class="stats-row flex justify-around my-4 bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+            <div class="stat-item text-center">
+                <h3 class="font-bold text-base text-pink-500" id="statSubscribers">12.4K</h3>
+                <p class="text-[11px] text-gray-400">Subscribers</p>
+            </div>
+            <div class="stat-item text-center">
+                <h3 class="font-bold text-base text-pink-500" id="statCreations">0</h3>
+                <p class="text-[11px] text-gray-400">Creations</p>
+            </div>
+            <div class="stat-item text-center">
+                <h3 class="font-bold text-base text-pink-500" id="statViews">1.2M</h3>
+                <p class="text-[11px] text-gray-400">Total Views</p>
+            </div>
+        </div>
+
+        <!-- MY CREATIONS SECTION -->
+        <div class="mt-6">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-photo-film text-pink-500"></i> My Creations
+                </h3>
+                <div class="flex gap-1 text-xs bg-gray-900 p-1 rounded-lg border border-gray-800">
+                    <button class="px-2.5 py-1 rounded-md active creation-tab-btn" onclick="filterCreations('all', this)">All</button>
+                    <button class="px-2.5 py-1 rounded-md creation-tab-btn" onclick="filterCreations('video', this)">Videos</button>
+                    <button class="px-2.5 py-1 rounded-md creation-tab-btn" onclick="filterCreations('short', this)">Shorts</button>
+                    <button class="px-2.5 py-1 rounded-md creation-tab-btn" onclick="filterCreations('post', this)">Posts</button>
+                </div>
+            </div>
+
+            <!-- Creations Grid -->
+            <div id="myCreationsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <!-- Dynamically populated from JavaScript storage -->
+            </div>
+            <div id="emptyCreationsMsg" class="text-center py-8 text-gray-500 text-sm hidden">
+                <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                No uploaded creations yet. Use the '+' button to add content!
+            </div>
+        </div>
+    </div>
+
+    <!-- EDITING MODAL (VIDEO & SHORT EDITOR) -->
+    <div id="videoEditorModal" class="editor-modal">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
+            <h3 class="font-bold text-lg flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i>
+                <span id="editorModalTitle">Edit Video</span>
+            </h3>
+            <button onclick="closeEditorModal()" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Video Preview Container -->
+        <div class="relative w-full max-w-lg mx-auto aspect-video bg-black rounded-xl overflow-hidden mb-4 border border-gray-800 flex items-center justify-center">
+            <video id="editorVideoPreview" controls class="w-full h-full object-contain filter-normal"></video>
+            <div id="editorTextOverlayContainer" class="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
+                <span id="editorTextOverlayText" class="text-white font-bold text-xl drop-shadow-md text-center hidden"></span>
+            </div>
+        </div>
+
+        <!-- Editing Tools Options -->
+        <div class="max-w-lg mx-auto w-full space-y-4">
+            
+            <!-- Filters -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Visual Filter</label>
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button class="filter-btn active" onclick="applyVideoFilter('normal', this)">Normal</button>
+                    <button class="filter-btn" onclick="applyVideoFilter('vivid', this)">Vivid</button>
+                    <button class="filter-btn" onclick="applyVideoFilter('vintage', this)">Vintage</button>
+                    <button class="filter-btn" onclick="applyVideoFilter('bw', this)">B&W</button>
+                    <button class="filter-btn" onclick="applyVideoFilter('warm', this)">Warm</button>
+                    <button class="filter-btn" onclick="applyVideoFilter('cool', this)">Cool</button>
+                </div>
+            </div>
+
+            <!-- Speed Control -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Playback Speed</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <button class="tool-btn bg-gray-800 hover:bg-gray-700 py-1.5 rounded-lg text-xs" onclick="setSpeed(0.5)">0.5x</button>
+                    <button class="tool-btn bg-pink-600 py-1.5 rounded-lg text-xs font-semibold" onclick="setSpeed(1.0)">1.0x (Normal)</button>
+                    <button class="tool-btn bg-gray-800 hover:bg-gray-700 py-1.5 rounded-lg text-xs" onclick="setSpeed(1.5)">1.5x</button>
+                    <button class="tool-btn bg-gray-800 hover:bg-gray-700 py-1.5 rounded-lg text-xs" onclick="setSpeed(2.0)">2.0x</button>
+                </div>
+            </div>
+
+            <!-- Audio Overlay -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Background Audio Track</label>
+                <select id="editorAudioTrack" class="w-full bg-gray-900 border border-gray-800 rounded-lg text-xs p-2.5 text-white outline-none">
+                    <option value="none">Original Audio Only</option>
+                    <option value="chill">Lo-Fi Chill Beats</option>
+                    <option value="energetic">Energetic Synth Pop</option>
+                    <option value="cinematic">Cinematic Ambient</option>
+                </select>
+            </div>
+
+            <!-- Text Overlay Input -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Add Text Overlay</label>
+                <input type="text" id="editorTextInput" placeholder="Enter text to overlay on video..." class="w-full bg-gray-900 border border-gray-800 rounded-lg text-xs p-2.5 text-white outline-none" oninput="updateTextOverlay(this.value)">
+            </div>
+
+            <!-- Title & Description Input -->
+            <div class="pt-2 border-t border-gray-800">
+                <label class="text-xs font-semibold text-pink-500 block mb-1">Title / Caption</label>
+                <input type="text" id="editorTitleInput" placeholder="Write a catchy title or caption..." class="w-full bg-gray-900 border border-gray-700 rounded-lg text-sm p-3 text-white outline-none focus:border-pink-500">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-3">
+                <button onclick="closeEditorModal()" class="flex-1 py-3 rounded-xl bg-gray-800 text-sm font-semibold hover:bg-gray-700">Cancel</button>
+                <button onclick="publishMediaContent()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-sm font-bold shadow-lg shadow-pink-500/30">Publish Creation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDITING MODAL (PHOTO POST EDITOR) -->
+    <div id="photoEditorModal" class="editor-modal">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
+            <h3 class="font-bold text-lg flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-pink-500"></i> Edit Photo Post
+            </h3>
+            <button onclick="closeEditorModal()" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Photo Preview Container -->
+        <div class="relative w-full max-w-md mx-auto aspect-square bg-black rounded-xl overflow-hidden mb-4 border border-gray-800 flex items-center justify-center">
+            <img id="editorPhotoPreview" src="" class="max-w-full max-h-full object-contain filter-normal">
+            <div class="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
+                <span id="editorPhotoTextOverlay" class="text-white font-bold text-2xl drop-shadow-md text-center hidden"></span>
+            </div>
+        </div>
+
+        <div class="max-w-md mx-auto w-full space-y-4">
+            <!-- Filters -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Filter</label>
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button class="filter-btn active" onclick="applyPhotoFilter('normal', this)">Normal</button>
+                    <button class="filter-btn" onclick="applyPhotoFilter('vivid', this)">Vivid</button>
+                    <button class="filter-btn" onclick="applyPhotoFilter('vintage', this)">Vintage</button>
+                    <button class="filter-btn" onclick="applyPhotoFilter('bw', this)">B&W</button>
+                    <button class="filter-btn" onclick="applyPhotoFilter('warm', this)">Warm</button>
+                </div>
+            </div>
+
+            <!-- Text Overlay -->
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Text Overlay</label>
+                <input type="text" id="editorPhotoTextInput" placeholder="Add sticker or text to photo..." class="w-full bg-gray-900 border border-gray-800 rounded-lg text-xs p-2.5 text-white outline-none" oninput="updatePhotoTextOverlay(this.value)">
+            </div>
+
+            <!-- Caption Input -->
+            <div class="pt-2 border-t border-gray-800">
+                <label class="text-xs font-semibold text-pink-500 block mb-1">Caption</label>
+                <textarea id="editorPhotoCaptionInput" rows="3" placeholder="Write a caption for your post..." class="w-full bg-gray-900 border border-gray-700 rounded-lg text-sm p-3 text-white outline-none focus:border-pink-500 resize-none"></textarea>
+            </div>
+
+            <!-- Publish Buttons -->
+            <div class="flex gap-3 pt-3">
+                <button onclick="closeEditorModal()" class="flex-1 py-3 rounded-xl bg-gray-800 text-sm font-semibold hover:bg-gray-700">Cancel</button>
+                <button onclick="publishMediaContent()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-sm font-bold shadow-lg shadow-pink-500/30">Post Photo</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- BOTTOM NAVIGATION (5 OPTIONS) -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('infinite-box', this)">
+            <i class="fa-solid fa-infinity"></i>
+            <span>Infinite Box</span>
+        </div>
+        <div class="nav-item plus-btn" onclick="switchTab('create', this)">
+            <i class="fa-solid fa-plus"></i>
+            <span>Create</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('following', this)">
+            <i class="fa-solid fa-users"></i>
+            <span>Following</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+
+    <!-- Application State & Interactive Scripts -->
+    <script>
+        // State Storage
+        let creationsState = JSON.parse(localStorage.getItem('yadavtube_creations')) || [];
+        let currentUploadType = null; // 'video', 'short', 'post'
+        let currentMediaData = null;
+        let selectedFilter = 'normal';
+
+        // Pre-fill Infinite Box with sample short if empty
+        const defaultShorts = [
+            {
+                id: 'default_1',
+                type: 'short',
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-neon-lights-in-a-futuristic-city-40033-large.mp4',
+                title: 'Night vibes with aesthetic lights 🌟 #shorts #aesthetic',
+                creator: '@desiflux',
+                likes: '24.5K',
+                comments: '1,020'
+            }
+        ];
+
+        window.onload = function() {
+            renderMyCreations();
+            renderInfiniteBoxShorts();
+            updateCreationsCount();
+        };
+
+        // Navigation Switching
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            if (element) element.classList.add('active');
+
+            if (tabId === 'infinite-box') {
+                playActiveShort();
+            } else {
+                pauseAllShorts();
+            }
+        }
+
+        // Notification Toast Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Upload Trigger Functionality
+        function triggerFileUpload(type) {
+            currentUploadType = type;
+            const fileInput = document.getElementById('mediaFileInput');
+            if (type === 'post') {
+                fileInput.accept = 'image/*';
+            } else {
+                fileInput.accept = 'video/*';
+            }
+            fileInput.click();
+        }
+
+        // Handling File Upload and Routing to Editor
+        function handleFileSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentMediaData = e.target.result;
+
+                if (currentUploadType === 'post') {
+                    // Open Photo Editor
+                    document.getElementById('editorPhotoPreview').src = currentMediaData;
+                    document.getElementById('editorPhotoCaptionInput').value = '';
+                    document.getElementById('editorPhotoTextInput').value = '';
+                    document.getElementById('editorPhotoTextOverlay').classList.add('hidden');
+                    document.getElementById('photoEditorModal').classList.add('active');
+                } else {
+                    // Open Video Editor (For Video or Short)
+                    const videoEl = document.getElementById('editorVideoPreview');
+                    videoEl.src = currentMediaData;
+                    document.getElementById('editorTitleInput').value = '';
+                    document.getElementById('editorTextInput').value = '';
+                    document.getElementById('editorTextOverlayText').classList.add('hidden');
+                    document.getElementById('editorModalTitle').innerText = currentUploadType === 'short' ? 'Edit Short Video (<60s)' : 'Edit Full Video';
+                    document.getElementById('videoEditorModal').classList.add('active');
+                }
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // Reset input
+        }
+
+        // Close Editor Modals
+        function closeEditorModal() {
+            document.getElementById('videoEditorModal').classList.remove('active');
+            document.getElementById('photoEditorModal').classList.remove('active');
+            const videoPreview = document.getElementById('editorVideoPreview');
+            videoPreview.pause();
+            videoPreview.src = '';
+        }
+
+        // Video Filter Application
+        function applyVideoFilter(filterName, btnEl) {
+            const videoPreview = document.getElementById('editorVideoPreview');
+            videoPreview.className = `w-full h-full object-contain filter-${filterName}`;
+            selectedFilter = filterName;
+            btnEl.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        // Photo Filter Application
+        function applyPhotoFilter(filterName, btnEl) {
+            const photoPreview = document.getElementById('editorPhotoPreview');
+            photoPreview.className = `max-w-full max-h-full object-contain filter-${filterName}`;
+            selectedFilter = filterName;
+            btnEl.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        // Speed Control
+        function setSpeed(speed) {
+            const videoPreview = document.getElementById('editorVideoPreview');
+            videoPreview.playbackRate = speed;
+            showToast(`Playback speed set to ${speed}x`);
+        }
+
+        // Text Overlay Live Preview
+        function updateTextOverlay(text) {
+            const overlayText = document.getElementById('editorTextOverlayText');
+            if (text.trim()) {
+                overlayText.innerText = text;
+                overlayText.classList.remove('hidden');
+            } else {
+                overlayText.classList.add('hidden');
+            }
+        }
+
+        function updatePhotoTextOverlay(text) {
+            const overlayText = document.getElementById('editorPhotoTextOverlay');
+            if (text.trim()) {
+                overlayText.innerText = text;
+                overlayText.classList.remove('hidden');
+            } else {
+                overlayText.classList.add('hidden');
+            }
+        }
+
+        // PUBLISH MEDIA TO CREATIONS & FEEDS
+        function publishMediaContent() {
+            let title = '';
+            let filter = selectedFilter;
+
+            if (currentUploadType === 'post') {
+                title = document.getElementById('editorPhotoCaptionInput').value.trim() || 'Untitled Post';
+            } else {
+                title = document.getElementById('editorTitleInput').value.trim() || 'Untitled Video';
+            }
+
+            const newCreation = {
+                id: 'creation_' + Date.now(),
+                type: currentUploadType,
+                title: title,
+                mediaUrl: currentMediaData,
+                filter: filter,
+                timestamp: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                views: '0 views',
+                likes: 0
+            };
+
+            // Add to state & localstorage
+            creationsState.unshift(newCreation);
+            localStorage.setItem('yadavtube_creations', JSON.stringify(creationsState));
+
+            // UI Updates
+            closeEditorModal();
+            renderMyCreations();
+            updateCreationsCount();
+
+            if (currentUploadType === 'short') {
+                renderInfiniteBoxShorts();
+                showToast('Short published to Infinite Box!');
+                switchTab('infinite-box', document.querySelectorAll('.nav-item')[1]);
+            } else if (currentUploadType === 'video') {
+                addVideoToHomeFeed(newCreation);
+                showToast('Video published to Home Feed!');
+                switchTab('home', document.querySelectorAll('.nav-item')[0]);
+            } else {
+                showToast('Photo post published!');
+                switchTab('profile', document.querySelectorAll('.nav-item')[4]);
+            }
+        }
+
+        // RENDER CREATIONS IN PROFILE
+        function renderMyCreations(filterType = 'all') {
+            const grid = document.getElementById('myCreationsGrid');
+            const emptyMsg = document.getElementById('emptyCreationsMsg');
+            grid.innerHTML = '';
+
+            const itemsToDisplay = creationsState.filter(item => filterType === 'all' || item.type === filterType);
+
+            if (itemsToDisplay.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            } else {
+                emptyMsg.classList.add('hidden');
+            }
+
+            itemsToDisplay.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-900 rounded-xl overflow-hidden border border-gray-800 relative group';
+                
+                let mediaElement = '';
+                if (item.type === 'post') {
+                    mediaElement = `<img src="${item.mediaUrl}" class="w-full h-32 object-cover filter-${item.filter}">`;
+                } else {
+                    mediaElement = `<video src="${item.mediaUrl}" class="w-full h-32 object-cover filter-${item.filter}"></video>`;
+                }
+
+                card.innerHTML = `
+                    <div class="relative">
+                        ${mediaElement}
+                        <span class="absolute top-2 left-2 text-[10px] uppercase font-bold bg-black/70 px-2 py-0.5 rounded text-pink-400 border border-pink-500/30">
+                            ${item.type}
+                        </span>
+                        <button onclick="deleteCreation('${item.id}', event)" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-600/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="p-2.5">
+                        <h4 class="text-xs font-semibold truncate text-white">${item.title}</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">${item.timestamp} • ${item.views}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCreations(type, btn) {
+            document.querySelectorAll('.creation-tab-btn').forEach(b => b.classList.remove('active', 'bg-pink-600', 'text-white'));
+            btn.classList.add('active', 'bg-pink-600', 'text-white');
+            renderMyCreations(type);
+        }
+
+        function deleteCreation(id, e) {
+            e.stopPropagation();
+            creationsState = creationsState.filter(item => item.id !== id);
+            localStorage.setItem('yadavtube_creations', JSON.stringify(creationsState));
+            renderMyCreations();
+            renderInfiniteBoxShorts();
+            updateCreationsCount();
+            showToast('Item deleted successfully');
+        }
+
+        function updateCreationsCount() {
+            document.getElementById('statCreations').innerText = creationsState.length;
+        }
+
+        // RENDER INFINITE BOX SHORTS
+        function renderInfiniteBoxShorts() {
+            const container = document.getElementById('shortsFeedContainer');
+            container.innerHTML = '';
+
+            const uploadedShorts = creationsState.filter(c => c.type === 'short').map(c => ({
+                id: c.id,
+                type: 'short',
+                url: c.mediaUrl,
+                title: c.title,
+                filter: c.filter,
+                creator: '@yadav_official',
+                likes: '1',
+                comments: '0'
+            }));
+
+            const allShorts = [...uploadedShorts, ...defaultShorts];
+
+            allShorts.forEach((short, idx) => {
+                const shortCard = document.createElement('div');
+                shortCard.className = 'short-card';
+                shortCard.innerHTML = `
+                    <video src="${short.url}" class="short-video-el filter-${short.filter || 'normal'}" loop playsinline></video>
+                    <div class="short-overlay"></div>
+                    <div class="short-info">
+                        <h3 class="font-bold text-sm flex items-center gap-1">${short.creator} <button class="follow-btn">Follow</button></h3>
+                        <p class="text-xs text-gray-200 mt-1">${short.title}</p>
+                    </div>
+                    <div class="short-actions">
+                        <div class="action-btn" onclick="toggleLikeShort(this)"><i class="fa-solid fa-heart"></i><span>${short.likes}</span></div>
+                        <div class="action-btn"><i class="fa-solid fa-comment"></i><span>${short.comments}</span></div>
+                        <div class="action-btn" onclick="showToast('Link copied to clipboard!')"><i class="fa-solid fa-share"></i><span>Share</span></div>
+                        <div class="action-btn" onclick="showToast('Saved to Watch Later!')"><i class="fa-solid fa-bookmark"></i><span>Save</span></div>
+                    </div>
+                `;
+                container.appendChild(shortCard);
+            });
+        }
+
+        function playActiveShort() {
+            const container = document.getElementById('shortsFeedContainer');
+            const videos = container.querySelectorAll('video');
+            if (videos.length > 0) {
+                videos[0].play().catch(() => {});
+            }
+        }
+
+        function pauseAllShorts() {
+            const videos = document.querySelectorAll('.short-video-el');
+            videos.forEach(v => v.pause());
+        }
+
+        function toggleLikeShort(btn) {
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('span');
+            if (icon.classList.contains('text-pink-500')) {
+                icon.classList.remove('text-pink-500');
+            } else {
+                icon.classList.add('text-pink-500');
+                showToast('Liked Short!');
+            }
+        }
+
+        // ADD FULL VIDEO TO HOME FEED
+        function addVideoToHomeFeed(videoItem) {
+            const grid = document.getElementById('homeVideoGrid');
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <div class="thumbnail">
+                    <video src="${videoItem.mediaUrl}" class="w-full h-full object-cover filter-${videoItem.filter}"></video>
+                    <span class="duration">NEW</span>
+                </div>
+                <div class="video-details">
+                    <div class="avatar">
+                        <img src="${document.getElementById('userProfileImg').src}" alt="Avatar">
+                    </div>
+                    <div class="meta">
+                        <h4>${videoItem.title}</h4>
+                        <p>Yadav Studio • Just now • 0 views</p>
+                    </div>
+                </div>
+            `;
+            grid.prepend(card);
+        }
+
+        // PROFILE CUSTOMIZATION
+        function updateProfilePicture(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const r⁸eader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('userProfileImg').src = evt.target.result;
+                showToast('Profile picture updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function editProfileName() {
+            const newName = prompt('Enter new Display Name:', document.getElementById('profileDisplayName').innerText);
+            if (newName && newName.trim() !== '') {
+                document.getElementById('profileDisplayName').innerText = newName.trim();
+                showToast('Profile updated!');
+            }
+        }
+
+        // CATEGORY & SEARCH FILTERS
+        function selectCategory(chip, cat) {
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            showToast(`Filtering by category: ${cat}`);
+        }
+
+        function filterHomeContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('#homeVideoGrid .video-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('h4').innerText.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+```
